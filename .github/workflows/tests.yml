@@ -47,6 +47,6 @@ jobs:
       run: phpunit --coverage-html=/.coverage/html
     - uses: actions/upload-artifact@v1
       if: success()
-       with:
-         name: tests coverage
-         path: /.coverage/html
+      with:
+        name: tests coverage
+        path: /.coverage/html
