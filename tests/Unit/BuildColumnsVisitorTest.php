@@ -225,4 +225,36 @@ class BuildColumnsVisitorTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function it_updates_query_values_according_to_the_rules_map()
+    {
+        $model = $this->getModelWithColumns([
+            'support_level_id' => [
+                'key' => 'support_level',
+                'map' => [
+                    'testing' => 1,
+                    'community' => 2,
+                    'official' => 3,
+                ],
+            ]
+        ]);
+
+        $this->assertWhereClauses('support_level:testing', ['Basic[and][0]' => 'support_level_id = 1'], $model);
+        $this->assertWhereClauses('support_level:community', ['Basic[and][0]' => 'support_level_id = 2'], $model);
+        $this->assertWhereClauses('support_level:official', ['Basic[and][0]' => 'support_level_id = 3'], $model);
+    }
+
+    /** @test */
+    public function it_does_not_update_query_values_if_the_rule_mapping_is_missing()
+    {
+        $model = $this->getModelWithColumns([
+            'support_level_id' => [
+                'key' => 'support_level',
+                'map' => ['testing' => 1],
+            ]
+        ]);
+
+        $this->assertWhereClauses('support_level:missing_value', ['Basic[and][0]' => 'support_level_id = missing_value'], $model);
+    }
 }
